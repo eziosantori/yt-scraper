@@ -1,0 +1,8 @@
+
+# Core dependencies
+youtube-transcript-api
+requests
+pandas
+streamlit
+python-dotenv
+google-generativeai
