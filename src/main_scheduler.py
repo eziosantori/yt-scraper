@@ -1,39 +1,43 @@
 from youtube_scraper import fetch_new_videos
 from transcript_extractor import get_transcript
-from gemini_analyzer import analyze_content
+from analyzer_factory import AnalyzerFactory
 from db_manager import init_db, save_analysis
 import time
 
 def daily_job():
-    """
-    Main daily job that coordinates the workflow:
-    1. Fetches new videos
-    2. Extracts transcripts
-    3. Analyzes content
-    4. Saves results to database
-    """
+    """Execution flow for daily analysis
+        Main daily job that coordinates the workflow:
+        1. Fetches new videos
+        2. Extracts transcripts
+        3. Analyzes content
+        4. Saves results to database
+    """   
     # Initialize database
     init_db()
     
-    # Fetch new videos published today
+    # Create analyzer instance
+    analyzer = AnalyzerFactory.create_analyzer()
+    print(f"Using analyzer: {analyzer.__class__.__name__}")
+    
+    # Fetch new videos
     videos = fetch_new_videos()
-    print(f"Found {len(videos)} new videos.")
+    print(f"Found {len(videos)} new videos to analyze")
     
     # Process each video
     for video in videos:
-        print(f"Processing video: {video['title']}")
+        print(f"Processing: {video['title']}")
         transcript = get_transcript(video['video_id'])
+        
         if transcript:
-            # Analyze transcript using Gemini
-            analysis = analyze_content(transcript)
+            analysis = analyzer.analyze(transcript)
             if analysis:
-                print(f"Found {len(analysis)} ticker mentions. Saving to database...")
+                print(f"Found {len(analysis)} ticker mentions")
                 save_analysis(analysis, video)
     
-    print("Daily job completed.")
+    print("Daily analysis completed")
 
 if __name__ == "__main__":
-    # Run immediately and then every 24 hours
+    # Run daily analysis on continuous loop
     while True:
         daily_job()
-        time.sleep(86400)  # 24 hours in seconds
+        time.sleep(86400)  # 24-hour interval

@@ -6,3 +6,5 @@ pandas
 streamlit
 python-dotenv
 google-generativeai
+openai
+anthropic

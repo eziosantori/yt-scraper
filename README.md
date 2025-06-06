@@ -73,8 +73,15 @@ Automated system to monitor financial YouTube channels, extract stock ticker men
 
 ```env
 # .env file
-YOUTUBE_API_KEY=your_youtube_api_key_here
-GEMINI_API_KEY=your_gemini_api_key_here
+AI_PROVIDER=gemini  #openai,gemini,anthropic
+# Gemini configuration
+GEMINI_API_KEY=your_gemini_key_here
+
+# OpenAI configuration
+OPENAI_API_KEY=your_openai_key_here
+
+# Anthropic configuration
+ANTHROPIC_API_KEY
 ```
 
 ## Run
@@ -91,16 +98,25 @@ python main_scheduler.py
 
 Access dashboard at: http://localhost:8501
 
-stock_youtube_monitor/
-├── venv/ # Virtual environment
+```
+yt-scraper/
+├── venv/
 ├── src/
+│ ├── strategies/ # Folder for all analysis strategies
+│ │ ├── **init**.py # Package initialization
+│ │ ├── base_strategy.py # Abstract base strategy
+│ │ ├── gemini_strategy.py # Gemini implementation
+│ │ ├── openai_strategy.py # OpenAI implementation
+│ │ └── ... # Future strategy implementations
 │ ├── youtube_scraper.py
 │ ├── transcript_extractor.py
-│ ├── gemini_analyzer.py
+│ ├── analyzer_factory.py # Strategy factory
 │ ├── db_manager.py
 │ └── main_scheduler.py
 ├── dashboard/
 │ └── app.py
-├── .env # Environment variables file
+├── .env
 ├── requirements.txt
-└── README.md
+├── README.md
+└── .gitignore
+```
