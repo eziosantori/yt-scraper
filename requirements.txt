@@ -4,7 +4,10 @@ youtube-transcript-api
 requests
 pandas
 streamlit
+plotly.express
 python-dotenv
 google-generativeai
 openai
 anthropic
+pytest 
+pytest-mock

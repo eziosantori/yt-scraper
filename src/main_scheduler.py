@@ -17,7 +17,8 @@ def daily_job():
     
     # Create analyzer instance
     analyzer = AnalyzerFactory.create_analyzer()
-    print(f"Using analyzer: {analyzer.__class__.__name__}")
+    provider_name = analyzer.__class__.__name__.replace("Strategy", "").upper()
+    print(f"Using analyzer: {provider_name}")
     
     # Fetch new videos
     videos = fetch_new_videos()
@@ -32,7 +33,7 @@ def daily_job():
             analysis = analyzer.analyze(transcript)
             if analysis:
                 print(f"Found {len(analysis)} ticker mentions")
-                save_analysis(analysis, video)
+                save_analysis(analysis, video, provider_name)
     
     print("Daily analysis completed")
 

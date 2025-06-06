@@ -16,7 +16,7 @@ class AnalyzerFactory:
             return GeminiStrategy()
         elif provider == "openai":
             return OpenAIStrategy()
-        elif provider == "antropic":
+        elif provider == "anthropic":
             return AnthropicStrategy()        
         else:
             raise ValueError(f"Unsupported AI provider: {provider}")
