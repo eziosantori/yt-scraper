@@ -37,7 +37,7 @@ class GeminiStrategy(AnalysisStrategy):
         
         Requirements:
         1. Identify all mentioned stock tickers (e.g., AAPL, TSLA)
-        2. Determine sentiment for each (bullish/bearish/neutral)
+        2. Determine sentiment for each (bullish/bearish/neutral) use always lower case to express sentiment
         3. Provide a concise 1-sentence summary per ticker
         4. Format response as valid JSON exactly like this:
         {{

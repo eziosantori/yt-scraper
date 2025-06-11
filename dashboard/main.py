@@ -17,14 +17,19 @@ DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'data', 'ticker_analysis
 conn = sqlite3.connect(DB_PATH)
 
 # Load all data
+
 df = pd.read_sql_query("SELECT * FROM mentions ORDER BY timestamp DESC", conn)
 conn.close()
 
-# Sentiment icons
+# Normalize sentiment column to lowercase for consistency
+if 'sentiment' in df.columns:
+    df['sentiment'] = df['sentiment'].astype(str).str.lower()
+
+# Sentiment icons (keep keys lowercase)
 SENTIMENT_ICONS = {
-    'Bullish': '🟢',
-    'Bearish': '🔴', 
-    'Neutral': '⚪'
+    'bullish': '🟢',
+    'bearish': '🔴', 
+    'neutral': '⚪'
 }
 
 # Sidebar filters
@@ -56,8 +61,8 @@ selected_provider = st.sidebar.multiselect(
 
 selected_sentiment = st.sidebar.multiselect(
     "Sentiment",
-    options=['Bullish', 'Bearish', 'Neutral'],
-    default=['Bullish', 'Bearish', 'Neutral']
+    options=['bullish', 'bearish', 'neutral'],
+    default=['bullish', 'bearish', 'neutral']
 )
 
 # Debug toggle
@@ -92,6 +97,7 @@ filtered_df = filtered_df[filtered_df['ai_provider'].isin(selected_provider)]
 if DEBUG:
     st.write("DEBUG: after provider filter", filtered_df)
 
+# Apply sentiment filter (now all lowercase)
 filtered_df = filtered_df[filtered_df['sentiment'].isin(selected_sentiment)]
 if DEBUG:
     st.write("DEBUG: after sentiment filter", filtered_df)

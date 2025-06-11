@@ -1,6 +1,5 @@
 
 # Core dependencies
-youtube-transcript-api
 requests
 pandas
 streamlit
@@ -11,3 +10,5 @@ openai
 anthropic
 pytest 
 pytest-mock
+invoke
+supadata
