@@ -36,8 +36,8 @@ SENTIMENT_ICONS = {
 st.sidebar.header("Filters")
 
 # Date filter: default last month
-min_date = pd.to_datetime(df['timestamp']).min()
-max_date = pd.to_datetime(df['timestamp']).max()
+min_date = pd.to_datetime(df['video_published']).min()
+max_date = pd.to_datetime(df['video_published']).max()
 def_last_month = (max_date - pd.DateOffset(months=1)).date() if not pd.isnull(max_date) else datetime.date.today()
 default_date = max(def_last_month, min_date.date()) if not pd.isnull(min_date) else datetime.date.today()
 
@@ -84,7 +84,7 @@ if DEBUG:
     st.write("DEBUG: after copy", filtered_df)
 
 # Apply date filter (>= selected_date)
-filtered_df = filtered_df[pd.to_datetime(filtered_df['timestamp']).dt.date >= selected_date]
+filtered_df = filtered_df[pd.to_datetime(filtered_df['video_published']).dt.date >= selected_date]
 if DEBUG:
     st.write("DEBUG: after date filter", filtered_df)
 

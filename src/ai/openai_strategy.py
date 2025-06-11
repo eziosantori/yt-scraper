@@ -35,7 +35,7 @@ class OpenAIStrategy(AnalysisStrategy):
         return f"""
         Analyze this financial video transcript and extract:
         1. Stock tickers mentioned (e.g., AAPL, TSLA)
-        2. Market sentiment for each (bullish/bearish/neutral)
+        2. Market sentiment for each (bullish/bearish/neutral) use always lower case to express sentiment
         3. Brief contextual summary per ticker
         
         Return ONLY valid JSON formatted like this:

@@ -19,7 +19,8 @@ def init_db():
                  video_title TEXT,
                  channel TEXT,
                  ai_provider TEXT,
-                 timestamp DATETIME)''')
+                 timestamp DATETIME,
+                 video_published DATETIME)''')
     
     conn.commit()
     conn.close()
@@ -30,12 +31,14 @@ def save_analysis(analysis, video_info, ai_provider):
     c = conn.cursor()
     
     for ticker, data in analysis.items():
+        # Use video_info['published'] if present, else None
+        video_published = video_info.get('published')
         c.execute('''INSERT INTO mentions 
-                  (ticker, sentiment, summary, video_title, channel, ai_provider, timestamp) 
-                  VALUES (?, ?, ?, ?, ?, ?, ?)''',
+                  (ticker, sentiment, summary, video_title, channel, ai_provider, timestamp, video_published) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?)''',
                   (ticker, data['sentiment'], data['summary'], 
                    video_info['title'], video_info['channel'], 
-                   ai_provider, datetime.now()))
+                   ai_provider, datetime.now(), video_published))
     
     conn.commit()
     conn.close()
