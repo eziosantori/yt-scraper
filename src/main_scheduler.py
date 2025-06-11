@@ -28,6 +28,7 @@ def daily_job():
     for video in videos:
         print(f"Processing: {video['title']}")
         transcript = get_transcript(video['video_id'])
+        #transcript = get_transcript_yt_dlp(video['video_id'], languages=['en'])
         
         if transcript:
             analysis = analyzer.analyze(transcript)

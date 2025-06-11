@@ -3,6 +3,7 @@ import sqlite3
 import pandas as pd
 import os
 import plotly.express as px
+import datetime
 
 # Page config
 st.set_page_config(
@@ -21,13 +22,27 @@ conn.close()
 
 # Sentiment icons
 SENTIMENT_ICONS = {
-    'bullish': '🟢',
-    'bearish': '🔴', 
-    'neutral': '⚪'
+    'Bullish': '🟢',
+    'Bearish': '🔴', 
+    'Neutral': '⚪'
 }
 
 # Sidebar filters
 st.sidebar.header("Filters")
+
+# Date filter: default last month
+min_date = pd.to_datetime(df['timestamp']).min()
+max_date = pd.to_datetime(df['timestamp']).max()
+def_last_month = (max_date - pd.DateOffset(months=1)).date() if not pd.isnull(max_date) else datetime.date.today()
+default_date = max(def_last_month, min_date.date()) if not pd.isnull(min_date) else datetime.date.today()
+
+selected_date = st.sidebar.date_input(
+    "Show mentions from (>=)",
+    value=default_date,
+    min_value=min_date.date() if not pd.isnull(min_date) else datetime.date.today(),
+    max_value=max_date.date() if not pd.isnull(max_date) else datetime.date.today()
+)
+
 selected_ticker = st.sidebar.selectbox(
     "Select Ticker", 
     ['All'] + sorted(df['ticker'].unique())
@@ -41,16 +56,45 @@ selected_provider = st.sidebar.multiselect(
 
 selected_sentiment = st.sidebar.multiselect(
     "Sentiment",
-    options=['bullish', 'bearish', 'neutral'],
-    default=['bullish', 'bearish', 'neutral']
+    options=['Bullish', 'Bearish', 'Neutral'],
+    default=['Bullish', 'Bearish', 'Neutral']
 )
+
+# Debug toggle
+DEBUG = st.sidebar.checkbox("Show debug", value=False)
+
+if DEBUG:
+    st.write("DEBUG: Dati caricati dal DB", df)
+    st.write("DEBUG: selected_ticker", selected_ticker)
+    st.write("DEBUG: selected_provider", selected_provider)
+    st.write("DEBUG: selected_sentiment", selected_sentiment)
+    st.write("DEBUG: unique tickers", df['ticker'].unique())
+    st.write("DEBUG: unique ai_provider", df['ai_provider'].unique())
+    st.write("DEBUG: unique sentiment", df['sentiment'].unique())
+    st.write("DEBUG: selected_date", selected_date)
 
 # Apply filters
 filtered_df = df.copy()
+if DEBUG:
+    st.write("DEBUG: after copy", filtered_df)
+
+# Apply date filter (>= selected_date)
+filtered_df = filtered_df[pd.to_datetime(filtered_df['timestamp']).dt.date >= selected_date]
+if DEBUG:
+    st.write("DEBUG: after date filter", filtered_df)
+
 if selected_ticker != 'All':
     filtered_df = filtered_df[filtered_df['ticker'] == selected_ticker]
+    if DEBUG:
+        st.write("DEBUG: after ticker filter", filtered_df)
+
 filtered_df = filtered_df[filtered_df['ai_provider'].isin(selected_provider)]
+if DEBUG:
+    st.write("DEBUG: after provider filter", filtered_df)
+
 filtered_df = filtered_df[filtered_df['sentiment'].isin(selected_sentiment)]
+if DEBUG:
+    st.write("DEBUG: after sentiment filter", filtered_df)
 
 # Add sentiment icons
 filtered_df['sentiment_icon'] = filtered_df['sentiment'].map(SENTIMENT_ICONS)

@@ -11,6 +11,7 @@ class AnalyzerFactory:
         Defaults to Gemini if not specified
         """
         provider = os.getenv("AI_PROVIDER", "gemini").lower()
+        print(provider)
         
         if provider == "gemini":
             return GeminiStrategy()
